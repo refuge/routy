@@ -1,3 +1,8 @@
+%%% -*- erlang -*-
+%%%
+%%% This file is part of routy released under the Apache 2 license.
+%%% See the NOTICE for more information.
+
 -module(routy_loader).
 
 -export([load_flows/1]).
