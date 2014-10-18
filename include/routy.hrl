@@ -1,0 +1,11 @@
+%%
+%%
+%%
+
+-record(
+    rmsg,
+    {
+        from,
+        attributes = []
+    }
+).
