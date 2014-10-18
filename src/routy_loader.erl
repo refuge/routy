@@ -6,6 +6,7 @@
 -module(routy_loader).
 
 -export([load_flows/1]).
+-export([start_example/0]).
 -export([load_example/0]).
 
 % {
@@ -25,6 +26,11 @@ load_flows({Nodes, Flows}) ->
     routy_router:dump(),
 
     ok.
+
+start_example() ->
+    lager:start(),
+    application:start(routy),
+    load_example().
 
 load_example() ->
     load_flows( {
