@@ -114,12 +114,12 @@ handle_call({unregister_node, NodeId}, _From, #rrstate{nodePids=NodePids}=State)
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
 
-handle_cast({route_msg, #rmsg{from=FromNode}}=NodeMsg, #rrstate{nodePids=NodePids, flows=Flows}=State) ->
+handle_cast({route_msg, #rmsg{from=FromNode}=NodeMsg}, #rrstate{nodePids=NodePids, flows=Flows}=State) ->
     case maps:find(FromNode, Flows) of
         {ok, ReceivingNodes} ->
             lists:foldl(
                 fun(ToNode, _Acc) ->
-                    io:format("Sending message [~p] from ~p to ~p~n", [NodeMsg, FromNode, ToNode]),
+                    io:format("Routing message [~p] from ~p to ~p~n", [NodeMsg, FromNode, ToNode]),
                     send_message(NodeMsg, ToNode, NodePids),
                     []
                 end,
@@ -127,13 +127,13 @@ handle_cast({route_msg, #rmsg{from=FromNode}}=NodeMsg, #rrstate{nodePids=NodePid
                 ReceivingNodes
             );
         error ->
-            io:format("No flow matches the exit node ~p~n", [FromNode])
+            io:format("Can't route message [~p]!~n", [NodeMsg])
     end,
     {noreply, State};
 handle_cast({dump}, #rrstate{nodePids=NodePids, flows=Flows}=State) ->
     io:format("Routy router dump:~n~n"),
-    dump_node_pids(NodePids),
-    dump_flows(Flows),
+    ok = dump_node_pids(NodePids),
+    ok = dump_flows(Flows),
     {noreply, State};
 handle_cast(_Msg, State) ->
     {noreply, State}.

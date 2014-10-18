@@ -20,12 +20,16 @@ load_flows({Nodes, Flows}) ->
     % load the scenario
     create_nodes(Nodes),
     create_flows(Flows),
+
+    % dump the current state
+    routy_router:dump(),
+    
     ok.
 
 load_example() ->
     load_flows( {
-            [{1, rtn_simple_emitter}, {2, rtn_simple_receiver}],
-            [{1,2}]
+            [{10, rtn_simple_emitter}, {20, rtn_simple_receiver}],
+            [{10,20}]
         }
     ).
 
@@ -34,7 +38,8 @@ load_example() ->
 create_nodes(Nodes) ->
     lists:foldl(
         fun({NodeId, Module}, _) ->
-            {ok, Pid} = Module:start_link(),
+            io:format("Create Node[~p] with module: ~p~n", [NodeId, Module]),
+            {ok, Pid} = Module:start_link(NodeId),
             routy_router:register_node(NodeId, Pid),
             []
         end,

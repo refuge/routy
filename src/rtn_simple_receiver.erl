@@ -11,7 +11,7 @@
 %% API Function Exports
 %% ------------------------------------------------------------------
 
--export([start_link/0]).
+-export([start_link/1]).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Exports
@@ -24,15 +24,15 @@
 %% API Function Definitions
 %% ------------------------------------------------------------------
 
-start_link() ->
-    gen_server:start_link(?MODULE, [], []).
+start_link(NodeId) ->
+    gen_server:start_link(?MODULE, [NodeId], []).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Definitions
 %% ------------------------------------------------------------------
 
-init(Args) ->
-    {ok, Args}.
+init([NodeId]) ->
+    {ok, NodeId}.
 
 handle_call(stop, _From, State) ->
     {stop, normal, shutdown_ok, State};
