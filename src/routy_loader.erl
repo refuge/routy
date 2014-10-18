@@ -9,7 +9,7 @@
 -export([load_example/0]).
 
 % {
-%     nodes=[{1, simple_...}, {...}],
+%     nodes=[{1, module_name, [Arguments]}, {...}],
 %     flows=[{1,2}, {...}]
 % }
 
@@ -23,12 +23,12 @@ load_flows({Nodes, Flows}) ->
 
     % dump the current state
     routy_router:dump(),
-    
+
     ok.
 
 load_example() ->
     load_flows( {
-            [{10, rtn_simple_emitter}, {20, rtn_simple_receiver}],
+            [{10, rtn_simple_emitter, [10000]}, {20, rtn_simple_receiver, []}],
             [{10,20}]
         }
     ).
@@ -37,9 +37,9 @@ load_example() ->
 
 create_nodes(Nodes) ->
     lists:foldl(
-        fun({NodeId, Module}, _) ->
+        fun({NodeId, Module, Args}, _) ->
             io:format("Create Node[~p] with module: ~p~n", [NodeId, Module]),
-            {ok, Pid} = Module:start_link(NodeId),
+            {ok, Pid} = Module:start_link(NodeId, Args),
             routy_router:register_node(NodeId, Pid),
             []
         end,

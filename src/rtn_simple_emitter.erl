@@ -15,7 +15,7 @@
 %% API Function Exports
 %% ------------------------------------------------------------------
 
--export([start_link/1]).
+-export([start_link/2]).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Exports
@@ -28,16 +28,16 @@
 %% API Function Definitions
 %% ------------------------------------------------------------------
 
-start_link(NodeId) ->
-    gen_server:start_link(?MODULE, [NodeId], []).
+start_link(NodeId, Args) ->
+    gen_server:start_link(?MODULE, [NodeId, Args], []).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Definitions
 %% ------------------------------------------------------------------
 
-init([NodeId]) ->
-    erlang:send_after(?INTERVAL, self(), trigger),
-    {ok, NodeId}.
+init([NodeId, [Interval]]) ->
+    erlang:send_after(Interval, self(), trigger),
+    {ok, [NodeId, Interval]}.
 
 handle_call(stop, _From, State) ->
     {stop, normal, shutdown_ok, State};
@@ -47,7 +47,7 @@ handle_call(_Request, _From, State) ->
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
-handle_info(trigger, NodeId) ->
+handle_info(trigger, [NodeId, Interval]=State) ->
     % send the message
     NodeMsg = #rmsg{
         from = NodeId,
@@ -55,8 +55,8 @@ handle_info(trigger, NodeId) ->
     },
     routy_router:route_msg(NodeMsg),
     % start new timer
-    erlang:send_after(?INTERVAL, self(), trigger),
-    {noreply, NodeId};
+    erlang:send_after(Interval, self(), trigger),
+    {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
 
