@@ -9,6 +9,10 @@
 % }
 
 load_flows({Nodes, Flows}) ->
+    % kill everything if needed
+    routy_router:killall(),
+
+    % load the scenario
     create_nodes(Nodes),
     create_flows(Flows),
     ok.
