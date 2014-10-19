@@ -32,7 +32,6 @@
 %% ------------------------------------------------------------------
 
 start_link() ->
-    io:format("Launching Routy router!~n"),
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
 %% ---
@@ -119,7 +118,7 @@ handle_cast({route_msg, #rmsg{from=FromNode}=NodeMsg}, #rrstate{nodePids=NodePid
         {ok, ReceivingNodes} ->
             lists:foldl(
                 fun(ToNode, _Acc) ->
-                    io:format("Routing message [~p] from ~p to ~p~n", [NodeMsg, FromNode, ToNode]),
+                    lager:info("Routing message [~p] from ~p to ~p~n", [NodeMsg, FromNode, ToNode]),
                     send_message(NodeMsg, ToNode, NodePids),
                     []
                 end,
@@ -127,13 +126,29 @@ handle_cast({route_msg, #rmsg{from=FromNode}=NodeMsg}, #rrstate{nodePids=NodePid
                 ReceivingNodes
             );
         error ->
-            io:format("Can't route message [~p]!~n", [NodeMsg])
+            lager:error("Can't route message [~p]!~n", [NodeMsg])
     end,
     {noreply, State};
 handle_cast({dump}, #rrstate{nodePids=NodePids, flows=Flows}=State) ->
-    io:format("Routy router dump:~n~n"),
-    ok = dump_node_pids(NodePids),
-    ok = dump_flows(Flows),
+    io:format("== Routy router dump ==~n"),
+    io:format(">Flows:~n"),
+    maps:fold(
+        fun(FromNode, ReceivingNodes, _Acc) ->
+            io:format("    * [~p] to ~p~n", [FromNode, ReceivingNodes]),
+            []
+        end,
+        [],
+        Flows
+    ),
+    io:format("~n>Nodes:~n"),
+    maps:fold(
+        fun(NodeId, Pid, _Acc) ->
+            io:format("    * Node[~p] == ~p~n", [NodeId, Pid]),
+            []
+        end,
+        [],
+        NodePids
+    ),
     {noreply, State};
 handle_cast(_Msg, State) ->
     {noreply, State}.
@@ -159,30 +174,6 @@ send_message(NodeMsg, NodeId, NodePids) ->
         error ->
             {error, unknown_node}
     end.
-
-dump_flows(Flows) ->
-    io:format("Flows:~n~n"),
-    maps:fold(
-        fun(FromNode, ReceivingNodes, _Acc) ->
-            io:format("Flows from ~p to ~p~n", [FromNode, ReceivingNodes]),
-            []
-        end,
-        [],
-        Flows
-    ),
-    ok.
-
-dump_node_pids(NodePids) ->
-    io:format("Nodes:~n~n"),
-    maps:fold(
-        fun(NodeId, Pid, _Acc) ->
-            io:format("Node with id ~p is PID ~p~n", [NodeId, Pid]),
-            []
-        end,
-        [],
-        NodePids
-    ),
-    ok.
 
 kill_nodes(NodePids) ->
     maps:fold(

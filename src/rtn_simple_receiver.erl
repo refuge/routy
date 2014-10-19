@@ -40,7 +40,7 @@ handle_call(_Request, _From, State) ->
     {reply, ok, State}.
 
 handle_cast({process_message, NodeMsg}, State) ->
-    io:format("Got a message: ~p~n", [NodeMsg]),
+    lager:info("Got a message: ~p~n", [NodeMsg]),
     {noreply, State};
 handle_cast(_Msg, State) ->
     {noreply, State}.

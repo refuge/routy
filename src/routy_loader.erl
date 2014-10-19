@@ -44,7 +44,7 @@ load_example() ->
 create_nodes(Nodes) ->
     lists:foldl(
         fun({NodeId, Module, Args}, _) ->
-            io:format("Create Node[~p] with module: ~p~n", [NodeId, Module]),
+            lager:info("Create Node[~p] with module: ~p~n", [NodeId, Module]),
             {ok, Pid} = Module:start_link(NodeId, Args),
             routy_router:register_node(NodeId, Pid),
             []
