@@ -1,7 +1,8 @@
-%%% -*- erlang -*-
-%%%
-%%% This file is part of routy released under the Apache 2 license.
-%%% See the NOTICE for more information.
+%% -*- erlang -*-
+%%
+%%  This Source Code Form is subject to the terms of the Mozilla Public
+%%  License, v. 2.0. If a copy of the MPL was not distributed with this
+%%  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 -module(routy_sup).
 
