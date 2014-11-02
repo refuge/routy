@@ -29,6 +29,6 @@ start_link() ->
 
 init([]) ->
     {ok, { {one_for_one, 5, 10},
-    [?CHILD(routy_router, worker)]
+    [?CHILD(routy_network, worker)]
     } }.
 

@@ -3,7 +3,7 @@
 %%% This file is part of routy released under the Apache 2 license.
 %%% See the NOTICE for more information.
 
--module(routy_router).
+-module(routy_network).
 -behaviour(gen_server).
 -define(SERVER, ?MODULE).
 
@@ -130,7 +130,7 @@ handle_cast({route_msg, #rmsg{from=FromNode}=NodeMsg}, #rrstate{nodePids=NodePid
     end,
     {noreply, State};
 handle_cast({dump}, #rrstate{nodePids=NodePids, flows=Flows}=State) ->
-    io:format("== Routy router dump ==~n"),
+    io:format("== Routy Network dump ==~n"),
     io:format(">Flows:~n"),
     maps:fold(
         fun(FromNode, ReceivingNodes, _Acc) ->

@@ -16,14 +16,14 @@
 
 load_flows({Nodes, Flows}) ->
     % kill everything if needed
-    routy_router:killall(),
+    routy_network:killall(),
 
     % load the scenario
     create_nodes(Nodes),
     create_flows(Flows),
 
     % dump the current state
-    routy_router:dump(),
+    routy_network:dump(),
 
     ok.
 
@@ -46,7 +46,7 @@ create_nodes(Nodes) ->
         fun({NodeId, Module, Args}, _) ->
             lager:info("Create Node[~p] with module: ~p~n", [NodeId, Module]),
             {ok, Pid} = Module:start_link(NodeId, Args),
-            routy_router:register_node(NodeId, Pid),
+            routy_network:register_node(NodeId, Pid),
             []
         end,
         [],
@@ -57,7 +57,7 @@ create_nodes(Nodes) ->
 create_flows(Flows) ->
     lists:foldl(
         fun({FromNode, ToNode}, _) ->
-            routy_router:add_flow(FromNode, ToNode),
+            routy_network:add_flow(FromNode, ToNode),
             []
         end,
         [],

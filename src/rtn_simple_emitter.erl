@@ -53,7 +53,7 @@ handle_info(trigger, [NodeId, Interval]=State) ->
         from = NodeId,
         attributes = [{foo, bar}]
     },
-    routy_router:route_msg(NodeMsg),
+    routy_network:route_msg(NodeMsg),
     % start new timer
     erlang:send_after(Interval, self(), trigger),
     {noreply, State};
