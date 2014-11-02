@@ -132,23 +132,23 @@ handle_cast({route_msg, #rmsg{from=FromNode}=NodeMsg}, #rrstate{nodePids=NodePid
     {noreply, State};
 handle_cast({dump}, #rrstate{nodePids=NodePids, flows=Flows}=State) ->
     io:format("== Routy Network dump ==~n"),
-    io:format(">Flows:~n"),
-    maps:fold(
-        fun(FromNode, ReceivingNodes, _Acc) ->
-            io:format("    * [~p] to ~p~n", [FromNode, ReceivingNodes]),
-            []
-        end,
-        [],
-        Flows
-    ),
     io:format("~n>Nodes:~n"),
-    maps:fold(
+    [] = maps:fold(
         fun(NodeId, Pid, _Acc) ->
             io:format("    * Node[~p] == ~p~n", [NodeId, Pid]),
             []
         end,
         [],
         NodePids
+    ),
+    io:format(">Flows:~n"),
+    [] = maps:fold(
+        fun(FromNode, ReceivingNodes, _Acc) ->
+            io:format("    * [~p] to ~p~n", [FromNode, ReceivingNodes]),
+            []
+        end,
+        [],
+        Flows
     ),
     {noreply, State};
 handle_cast(_Msg, State) ->
