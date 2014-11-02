@@ -4,6 +4,14 @@
 %%  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 -record(
+    rnetwork,
+    {
+        nodes = [],
+        flows = []
+    }
+).
+
+-record(
     rmsg,
     {
         from,

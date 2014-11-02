@@ -6,16 +6,14 @@
 
 -module(routy_loader).
 
--export([load_flows/1]).
--export([start_example/0]).
--export([load_example/0]).
+-export([load_network/1, load_network/2]).
 
-% {
-%     nodes=[{1, module_name, [Arguments]}, {...}],
-%     flows=[{1,2}, {...}]
-% }
+-include("routy.hrl").
 
-load_flows({Nodes, Flows}) ->
+load_network(Network) ->
+    load_network(Network, true).
+
+load_network(#rnetwork{nodes=Nodes, flows=Flows}, Dump) ->
     % kill everything if needed
     routy_network:killall(),
 
@@ -24,21 +22,11 @@ load_flows({Nodes, Flows}) ->
     create_flows(Flows),
 
     % dump the current state
-    routy_network:dump(),
+    case Dump of
+        true -> routy_network:dump()
+    end,
 
     ok.
-
-start_example() ->
-    lager:start(),
-    application:start(routy),
-    load_example().
-
-load_example() ->
-    load_flows( {
-            [{10, rtn_simple_emitter, [10000]}, {20, rtn_simple_receiver, []}],
-            [{10,20}]
-        }
-    ).
 
 %% ----
 
