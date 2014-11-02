@@ -4,20 +4,20 @@
 %%  License, v. 2.0. If a copy of the MPL was not distributed with this
 %%  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
--module(routy_loader).
+-module(routy_deployer).
 
--export([load_network/1, load_network/2]).
+-export([deploy_network/1, deploy_network/2]).
 
 -include("routy.hrl").
 
-load_network(Network) ->
-    load_network(Network, true).
+deploy_network(Network) ->
+    deploy_network(Network, true).
 
-load_network(#rnetwork{nodes=Nodes, flows=Flows}, Dump) ->
+deploy_network(#rnetwork{nodes=Nodes, flows=Flows}, Dump) ->
     % kill everything if needed
     routy_network:killall(),
 
-    % load the scenario
+    % deploy the scenario
     create_nodes(Nodes),
     create_flows(Flows),
 

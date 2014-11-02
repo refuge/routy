@@ -7,19 +7,19 @@
 -module(routy_example).
 
 -export([start_example/0]).
--export([load_example/0]).
+-export([deploy_example/0]).
 
 -include("routy.hrl").
 
 start_example() ->
     lager:start(),
     application:start(routy),
-    load_example().
+    deploy_example().
 
-load_example() ->
+deploy_example() ->
     Network = #rnetwork{
             nodes=[{10, rtn_simple_emitter, [10000]}, {20, rtn_simple_receiver, []}],
             flows=[{10,20}]
     },
-    route_loader:load_flows(Network).
+    route_deployer:deploy_network(Network).
 
