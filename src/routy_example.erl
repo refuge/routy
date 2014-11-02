@@ -21,5 +21,5 @@ deploy_example() ->
             nodes=[{10, rtn_simple_emitter, [10000]}, {20, rtn_simple_receiver, []}],
             flows=[{10,20}]
     },
-    route_deployer:deploy_network(Network).
+    routy_deployer:deploy_network(Network).
 
